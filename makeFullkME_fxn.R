@@ -25,9 +25,7 @@ makeFullkME <- function(datExpr,
   expr <- apply(t(datExpr[, -c(1, 2)]), 2, as.numeric)
   modEig <- modEig[, -c(1, 2)]
   
-  tic()
   kmeStats <- mclapply(modEig, function(ME) t(apply(expr, 2, corStats, ME)), mc.cores = nThreads)
-  toc()
   kmeStats <- as.data.frame(kmeStats) 
   colnames(kmeStats) <- paste0("kME", mapply(function(x) paste0(x, c(".cor", ".pval")), colnames(modEig)))
   
