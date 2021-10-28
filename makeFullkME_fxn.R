@@ -5,29 +5,33 @@ corStats <- function(x, y) {
 
 makeFullkME <- function(datExpr, 
                         modEig, 
-                        kME) {
+                        kme,
+                        nThreads = NULL) {
   
-  library(data.table)
-  library(WGCNA)
+  library(parallel)
+  
+  if (is.null(nThreads)) nThreads <- detectCores()
   
   modEig <- modEig[match(colnames(datExpr)[-c(1, 2)], modEig$Index),]
-  if(!identical(as.integer(as.numeric(colnames(datExpr)[-c(1, 2)])), modEig$Index)) {
+  if (!identical(as.integer(as.numeric(colnames(datExpr)[-c(1, 2)])), modEig$Index)) {
     stop("Expression samples do not match module eigengene samples")
   }
   
-  datExpr <- datExpr[match(kME$Index, datExpr[, 1]),]
-  if(!identical(as.integer(datExpr[, 1]), kME$Index)) {
+  datExpr <- datExpr[match(kme$Index, datExpr[, 1]),]
+  if (!identical(as.integer(datExpr[, 1]), kme$Index)) {
     stop("Expression features do match kME table features")
   }
   
   expr <- apply(t(datExpr[, -c(1, 2)]), 2, as.numeric)
   modEig <- modEig[, -c(1, 2)]
   
-  kme.stats <- lapply(modEig, function(ME) t(apply(expr, 2, corStats, ME)))
-  kme.stats <- as.data.frame(kme.stats) 
-  colnames(kme.stats) <- paste0("kME", unlist(lapply(colnames(modEig), function(x) paste0(x, c(".cor", ".pval")))))
+  tic()
+  kmeStats <- mclapply(modEig, function(ME) t(apply(expr, 2, corStats, ME)), mc.cores = nThreads)
+  toc()
+  kmeStats <- as.data.frame(kmeStats) 
+  colnames(kmeStats) <- paste0("kME", mapply(function(x) paste0(x, c(".cor", ".pval")), colnames(modEig)))
   
-  kme.full <- cbind.data.frame(kME, kme.stats)
-  return(kme.full)
+  kmeFull <- cbind.data.frame(kme, kmeStats)
+  return(kmeFull)
   
 }
