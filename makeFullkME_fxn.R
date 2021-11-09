@@ -8,7 +8,7 @@ makeFullkME <- function(datExpr,
                         kme,
                         nThreads = NULL) {
   
-  library(parallel)
+  require("parallel")
   
   if (is.null(nThreads)) nThreads <- detectCores()
   
