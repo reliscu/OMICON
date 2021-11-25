@@ -13,5 +13,5 @@ fullkME <- makeFullkME(datExpr, modEig, kme, nThreads)
 toc()
 
 tic()
-fullkME <- makeFullkMESerial(datExpr, modEig, kme, nThreads)
+fullkME <- makeFullkMESerial(datExpr, modEig, kme)
 toc()
