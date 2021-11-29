@@ -8,10 +8,12 @@ modEig <- as.data.frame(fread("Module_eigengenes_18-12-19.csv"))
 kme <- as.data.frame(fread("kME_table_18-12-19.csv"))
 nThreads <- 15
 
-tic()
-fullkME <- makeFullkME(datExpr, modEig, kme, nThreads)
-toc()
+# tic()
+# fullkME <- makeFullkME(datExpr, modEig, kme, nThreads)
+# toc()
 
 tic()
 fullkME <- makeFullkMESerial(datExpr, modEig, kme)
 toc()
+
+fwrite(fullkME, file = "Full_kME_table.csv") ## Write file to current working directory

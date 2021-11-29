@@ -27,16 +27,16 @@ makeFullkME <- function(datExpr,
   
   kmeStats <- mclapply(modEig, function(ME) t(apply(expr, 2, corStats, ME)), mc.cores = nThreads)
   kmeStats <- as.data.frame(kmeStats) 
-  colnames(kmeStats) <- paste0("kME", mapply(function(x) paste0(x, c(".cor", ".pval")), colnames(modEig)))
+  colnames(kmeStats) <- paste0("kME", mapply(function(x) {paste0(x, c(".cor", ".pval")), colnames(modEig))})
   
   kmeFull <- cbind.data.frame(kme, kmeStats)
   return(kmeFull)
   
 }
 
-makeFullkMESerial <- function(datExpr, 
-                        modEig, 
-                        kme) {
+makeFullkMESerial <- function(datExpr,
+                              modEig, 
+                              kme) {
   
   modEig <- modEig[match(colnames(datExpr)[-c(1, 2)], modEig$Index),]
   if (!identical(as.integer(as.numeric(colnames(datExpr)[-c(1, 2)])), modEig$Index)) {
@@ -53,7 +53,7 @@ makeFullkMESerial <- function(datExpr,
   
   kmeStats <- lapply(modEig, function(ME) t(apply(expr, 2, corStats, ME)))
   kmeStats <- as.data.frame(kmeStats) 
-  colnames(kmeStats) <- paste0("kME", mapply(function(x) paste0(x, c(".cor", ".pval")), colnames(modEig)))
+  colnames(kmeStats) <- paste0("kME", mapply(function(x) {paste0(x, c(".cor", ".pval")), colnames(modEig))})
   
   kmeFull <- cbind.data.frame(kme, kmeStats)
   return(kmeFull)
