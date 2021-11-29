@@ -16,4 +16,4 @@ tic()
 fullkME <- makeFullkMESerial(datExpr, modEig, kme)
 toc()
 
-fwrite(fullkME, file = "Full_kME_table.csv") ## Write file to current working directory
+fwrite(fullkME, file = "/path/to/output/directory/Full_kME_table.csv") ## Write file to disk
