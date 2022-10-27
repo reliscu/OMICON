@@ -1,7 +1,5 @@
 make_full_kme <- function(analyte_data, module_eig, kme_partial, parallel=F, n_threads=NULL){
-  
-  tic()
-  
+
   module_eig$Index <- as.character(module_eig$Index)
   idx <- match(colnames(analyte_data)[-c(1,2)], module_eig$Index)
   module_eig <- module_eig[idx,]
@@ -40,8 +38,6 @@ make_full_kme <- function(analyte_data, module_eig, kme_partial, parallel=F, n_t
   colnames(kme_stats) <- paste0("kME", mapply(function(x){
     paste0(x, c(".cor", ".pval"))
   }, colnames(module_eig)))
-  
-  toc()
   
   return(cbind(kme_partial, kme_stats))
   
