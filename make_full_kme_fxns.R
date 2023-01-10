@@ -5,19 +5,23 @@ make_full_kme <- function(analyte_data, module_eig, kme_partial, parallel=F, n_t
   module_eig <- module_eig[idx,]
   
   if(!identical(colnames(analyte_data)[-c(1,2)], module_eig$Index)){
-    stop("Expression samples do not match module eigengene samples")
+    
+    stop("Expression samples do not match module eigengene samples.")
+    
   }
   
   idx <- match(analyte_data$INDEX[-c(1)], kme_partial$Index)
   kme_partial <- kme_partial[idx,]
   
   if(!identical(analyte_data$INDEX[-c(1)], kme_partial$Index)){
-    stop("Expression features do match kME table features")
+    
+    stop("Expression features do match kME table features.")
+    
   }
   
   analyte_data <- remove_dataset_indices(analyte_data)
   analyte_data <- analyte_data[,-c(1)]
-  module_eig <- module_eig[,-c(1,2)]
+  module_eig <- module_eig[-c(1,2)]
   
   eig_vecs <- lapply(1:ncol(module_eig), function(i) module_eig[,i])
   
@@ -28,20 +32,20 @@ make_full_kme <- function(analyte_data, module_eig, kme_partial, parallel=F, n_t
   } else {
     
     kme_stats_list <- lapply(eig_vecs, function(eigengene){
+      
       t(apply(analyte_data, 1, cor_fxn, eigengene))
+      
     })
     
   }
 
   kme_stats <- do.call(cbind, kme_stats_list)
   
-  colnames(kme_stats) <- paste0("kME", mapply(function(x){
-    paste0(x, c(".cor", ".pval"))
-  }, colnames(module_eig)))
+  colnames(kme_stats) <- paste0("kME", mapply(function(x) paste0(x, c(".cor", ".pval")), colnames(module_eig)))
   
   return(cbind(kme_partial, kme_stats))
   
-} ## make_full_kme_par <- function(
+} 
 
 par_cor <- function(analyte_data, eig_vecs, n_threads){
   
@@ -56,7 +60,9 @@ par_cor <- function(analyte_data, eig_vecs, n_threads){
   plan(multisession, workers=n_threads)
   
   kme_stats_list <- future_lapply(eig_vecs, FUN=function(eigengene){
+    
     t(apply(analyte_data, 1, cor_fxn, eigengene))
+      
   })
   
   return(kme_stats_list)
@@ -77,7 +83,5 @@ remove_dataset_indices <- function(analyte_data){
 
 cor_fxn <- function(x, y){
   cor.stats <- cor.test(x, y)
-  return(c(
-    cor.stats$estimate, cor.stats$p.value
-  ))
+  return(c(cor.stats$estimate, cor.stats$p.value))
 }

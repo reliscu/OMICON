@@ -9,8 +9,12 @@ kme_partial <- fread("data/kME_table_08-39-41.csv", data.table=F)
 n_threads <- 15
 parallel <- T
 
+cat("\n")
+cat("Calculating kME for all module eigengenes.\nThis may take a while.")
+
 tic()
 full_kme <- make_full_kme(analyte_data, module_eig, kme_partial, parallel, n_threads)
+cat("\n")
 toc()
 
-fwrite(full_kme, file = "data/full_kME_table.csv")
+fwrite(full_kme, file="data/full_kME_table.csv")
